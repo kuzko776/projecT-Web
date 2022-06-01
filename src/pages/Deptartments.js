@@ -83,7 +83,7 @@ export default function Departments() {
         <Box>
           <Stack>
             <Typography variant="h3" margin="auto" gutterBottom>
-              Departments
+              Departments typescript
             </Typography>
           </Stack>
 
