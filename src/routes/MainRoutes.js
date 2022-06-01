@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { Outlet } from "react-router";
 
-import Loadable from "components/general/Loadable";
+import Loadable from "../components/general/Loadable";
 import MainLayout from "layout/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
