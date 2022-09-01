@@ -1,10 +1,9 @@
 import * as React from "react";
-import { useField } from 'formik';
+import { useField } from "formik";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 
-export default function TagsAutoComplete({...props }) {
-
+export default function TagsAutoComplete({ ...props }) {
   const [field, meta, helpers] = useField(props.name);
 
   const { setValue } = helpers;
@@ -13,9 +12,10 @@ export default function TagsAutoComplete({...props }) {
       {...props}
       multiple
       id="tags-standard"
-      onChange={(event,value)=>{setValue(value)}}
-      groupBy={(option) => option.depName}
-      getOptionLabel={(option) => option.depName + " " + option.number}
+      onChange={(event, value) => {
+        setValue(value);
+      }}
+      
       renderInput={(params) => (
         <TextField {...params} variant="standard" label="Send to" />
       )}

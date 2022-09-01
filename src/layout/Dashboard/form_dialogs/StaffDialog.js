@@ -46,13 +46,23 @@ export default function FormDialog({
           <TextField
             margin="dense"
             name="name"
-            label="name"
+            label="Name"
             type="name"
             fullWidth
             error={!validName}
             helperText={validName ? null : nameErrorMsg}
             variant="standard"
             value={inputs.name || ""}
+            onChange={handleChange}
+          />
+          <TextField
+            margin="dense"
+            name="password"
+            label="Password"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={inputs.password || ""}
             onChange={handleChange}
           />
         </form>

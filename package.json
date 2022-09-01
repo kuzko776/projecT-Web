@@ -2,7 +2,6 @@
   "name": "projectt",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://github.com/kuzko776/ProjectT-Website.git",
   "dependencies": {
     "@date-io/date-fns": "^2.11.0",
     "@date-io/dayjs": "^2.11.0",

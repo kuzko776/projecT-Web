@@ -32,7 +32,6 @@ const MainStyle = styled('div')(({ theme }) => ({
 export default function MainLayout() {
 
     const [open, setOpen] = useState(false);
-
     return (
         <RootStyle>
             <DashboardNavbar onOpenSidebar={() => setOpen(true)} />

@@ -28,8 +28,12 @@ export function handleDocChange(
   let dataArray = [];
 
   const q = condition
-    ? query(parentCollection, condition, limit(limitValue))
-    : query(parentCollection, limit(limitValue));
+    ? limitValue
+      ? query(parentCollection, condition, limit(limitValue))
+      : query(parentCollection, condition)
+    : limitValue
+    ? query(parentCollection, limit(limitValue))
+    : query(parentCollection);
 
   const unsubscribe = onSnapshot(q, (snapshot) => {
     snapshot.docChanges().forEach((change) => {
@@ -111,7 +115,7 @@ export async function observeDocument(docRef, setStateList) {
     };
 
   const unsub = onSnapshot(docRef, (doc) => {
-    setStateList(doc.data());
+    setStateList(Object.assign({ id: doc.id }, doc.data()));
   });
   return () => {
     unsub();
@@ -124,10 +128,11 @@ export async function getDocument(docRef, setStateList) {
     return () => {
       setStateList(null);
     };
-  let data = null;
+
   const docSnap = await getDoc(docRef);
 
-  if (docSnap.exists()) setStateList(docSnap.data());
+  if (docSnap.exists())
+    setStateList(Object.assign({ id: docSnap.id }, docSnap.data()));
   return () => {
     setStateList(null);
   };
@@ -216,4 +221,32 @@ export async function onSubjectNameCellEditCommit(params, subjectId) {
   } catch (e) {
     console.error("Error adding document: ", e);
   }
+}
+
+// board marks helpers
+export function onGpaCellEditCommit( id, field, value, ref ) {
+  console.log(ref);
+  updateDoc(doc(ref, id), { [field]: value });
+}
+
+// special case
+export async function getDocumentsWithParentID(parentCollection, setStateList) {
+  if (parentCollection === null)
+    return () => {
+      setStateList([]);
+    };
+  let dataArray = [];
+  const querySnapshot = await getDocs(parentCollection);
+  querySnapshot.forEach((doc) => {
+    const currentDoc = Object.assign(
+      { id: doc.id, parentID: doc.ref.parent.parent.id },
+      doc.data()
+    );
+    dataArray.push(currentDoc);
+  });
+
+  setStateList([...dataArray]);
+  return () => {
+    setStateList([]);
+  };
 }

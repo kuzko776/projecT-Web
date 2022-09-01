@@ -27,7 +27,7 @@ export default function AllPosts({}) {
       <Stack alignItems='center' margin>
       <Button
         variant="contained"
-        onClick={() => navigate("../post_form", { replace: true })}
+        onClick={() => navigate("../post_form?state=new")}
       >
         New Post
       </Button>

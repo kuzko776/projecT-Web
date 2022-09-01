@@ -65,7 +65,7 @@ export default function Community({}) {
               </Typography>
               <Button
                 variant="contained"
-                onClick={()=>navigate("../post_form",{replace:true})}
+                onClick={()=>navigate("../post_form?state=new")}
               >
                 New Post
               </Button>

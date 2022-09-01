@@ -4,6 +4,7 @@ import { Outlet } from "react-router";
 import Loadable from "components/general/Loadable";
 import MainLayout from "layout/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
+import MarksBoard from "pages/MarksBoard";
 
 const Departments = Loadable(lazy(() => import("pages/Deptartments")));
 const Batchs = Loadable(lazy(() => import("pages/Batchs")));
@@ -60,7 +61,10 @@ export default function MainRoutes(user) {
           },
         ],
       },
-
+      {
+        path: "board_marks",
+        element: <MarksBoard />,
+      },
       {
         path: "community",
         element: <Outlet />,
@@ -86,7 +90,7 @@ export default function MainRoutes(user) {
             element: <FullPost />,
           },
           {
-            path: "requests/:requesrId",
+            path: "requests/:requestId",
             element: <FullRequest />,
           },
         ],

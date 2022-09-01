@@ -223,14 +223,14 @@ export default function Subjects() {
             }}
           />
         </Box>
-        <AdvancedAlert
+      </Card>
+      <AdvancedAlert
           open={alertOpen}
           msgType={msgType}
           handleClose={() => {
             setAlertOpen(false);
           }}
         />
-      </Card>
     </Container>
   );
 }

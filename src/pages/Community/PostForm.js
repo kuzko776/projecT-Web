@@ -15,15 +15,18 @@ import {
 import { styled } from "@mui/material/styles";
 import TagsAutoComplete from "components/community/TagsAutoComplete";
 import CustomBreadcrumbs from "components/CustomBreadcrumbs";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 import db from "../../firebase";
 import {
   collectionGroup,
   collection,
   addDoc,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 //helpers
-import { getDocuments } from "../../helpers/DashboardHelper";
+import { getDocuments, getDocument } from "../../helpers/DashboardHelper";
 
 const ArabicTypography = styled(Typography)(({ theme }) => ({
   textAlign: "right",
@@ -38,24 +41,35 @@ const breadcrumbs = [
 ];
 
 export default function PostForm({ user }) {
-  const [batchList, setBatchList] = useState([]);
+  const [departmentList, setDepartmentList] = useState([]);
+  const [post, setPost] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  const navigate = useNavigate();
+
+  const postID = searchParams.get("id");
+  const state = searchParams.get("state");
 
   //refrences
-  const batchCollection = collectionGroup(db, "batchs");
+  const depCollection = collection(db, "departments");
   const postsCollection = collection(db, "posts");
+  const requestRef = state === "edit" ? doc(postsCollection, postID) : null;
+
+  useEffect(() => getDocument(requestRef, setPost), []);
 
   const PostSchema = Yup.object().shape({
     title: Yup.string()
       .required("الرجاء كتابة عنوان")
-      .max(50, "يجب ان لا يتخطى العنوان 50 خانة"),
-    description: Yup.string().required("الرجاء كتابة وصف"),
-    content: Yup.string().required("الرجاء كتابة محتوى"),
+      .max(50, "يجب ان لا يتخطى العنوان 50 حرف"),
+
+    content: Yup.string()
+      .required("الرجاء كتابة محتوى")
+      .max(2000, "يجب ان لا يتخطى الوصف 2000 حرف"),
   });
 
   const formik = useFormik({
     initialValues: {
       title: "",
-      description: "",
       content: "",
       tags: [],
       publish: false,
@@ -63,25 +77,55 @@ export default function PostForm({ user }) {
     },
     validationSchema: PostSchema,
     onSubmit: (data) => {
-      const tags = data.tags.map((option) => {
-        return option.depName +" "+ option.number;
-      });
-
-      addDoc(postsCollection, {
-        ...data,
-        date: new Date(),
-        publisherName: user.displayName,
-        publisherID: user.uid,
-        tags: data.sendAll ? ["Computer Studies"] : tags,
-      });
+      console.log(data);
+      if (state == "new") {
+        addDoc(postsCollection, {
+          ...data,
+          date: new Date(),
+          publisherName: user.displayName,
+          publisherID: user.uid,
+          tags: data.sendAll? [..."Computer Studies"] : data.tags 
+        });
+      } else if (state == "edit") {
+        delete data.id;
+        updateDoc(requestRef, data);
+      }
+      navigate(-1)
     },
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } =
-    formik;
+  const {
+    errors,
+    touched,
+    values,
+    isSubmitting,
+    handleSubmit,
+    getFieldProps,
+    setValues,
+  } = formik;
 
-  useEffect(() => getDocuments(batchCollection, setBatchList), []);
-  console.log(user);
+  useEffect(
+    () =>
+      getDocuments(depCollection, (list) => {
+        let depList = [];
+        list.forEach(function (i) {
+          depList.push(i.name);
+        });
+        setDepartmentList(depList);
+      }),
+    []
+  );
+  useEffect(() => {
+    if (post) setValues(post);
+  }, [post]);
+
+  const handleDelete = () => {};
+
+  const titleError = Boolean(touched.title && errors.title),
+    contentError = Boolean(touched.content && errors.content);
+
+    // console.log(getFieldProps("tags"));
+
   return (
     <Box marginX={1}>
       <CustomBreadcrumbs list={breadcrumbs} />
@@ -94,7 +138,7 @@ export default function PostForm({ user }) {
                   variant="h6"
                   sx={{ marginBottom: 1, paddingInline: 2 }}
                 >
-                  إنشاء منشور جديد
+                  {state === "new" ? "إنشاء منشور جديد" : "تعديل المنشور"}
                 </ArabicTypography>
 
                 <Stack spacing={2} dir="rtl">
@@ -104,16 +148,12 @@ export default function PostForm({ user }) {
                     required
                     label="العنوان"
                     {...getFieldProps("title")}
-                    error={Boolean(touched.title && errors.title)}
-                    helperText={touched.title && errors.title}
-                  />
-                  <TextField
-                    name="description"
-                    required
-                    label="الوصف"
-                    {...getFieldProps("description")}
-                    error={Boolean(touched.description && errors.description)}
-                    helperText={touched.description && errors.description}
+                    error={titleError}
+                    helperText={
+                      titleError
+                        ? errors.title
+                        : values.title.length + "/50"
+                    }
                   />
                   <TextField
                     name="content"
@@ -121,8 +161,12 @@ export default function PostForm({ user }) {
                     multiline
                     label="المحتوى"
                     {...getFieldProps("content")}
-                    error={Boolean(touched.content && errors.content)}
-                    helperText={touched.content && errors.content}
+                    error={contentError}
+                    helperText={
+                      contentError
+                        ? errors.content
+                        : values.content.length + "/2000"
+                    }
                   />
                 </Stack>
               </Card>
@@ -138,27 +182,38 @@ export default function PostForm({ user }) {
                   </Typography>
                   <FormControlLabel
                     control={
-                      <Switch name="publish" {...getFieldProps("publish")} />
+                      <Switch
+                        checked={formik.values.publish}
+                        {...getFieldProps("publish")}
+                      />
                     }
                     label="Publish"
                   />
                   <FormControlLabel
                     control={
-                      <Switch name="sendAll" {...getFieldProps("sendAll")} />
+                      <Switch
+                        checked={formik.values.sendAll}
+                        {...getFieldProps("sendAll")}
+                      />
                     }
                     label="Send to all"
                   />
 
                   <TagsAutoComplete
-                    options={batchList}
+                    options={departmentList}
                     {...getFieldProps("tags")}
+                    value = {formik.values.tags.filter(e => e !== 'Computer Studies')}
                     disabled={values.sendAll}
                   />
 
                   <Stack spacing={1} direction="row" justifyContent="end">
-                    <Button>Preview</Button>
+                    {state === "edit" && (
+                      <Button color="error" onClick={handleDelete}>
+                        Delete
+                      </Button>
+                    )}
                     <Button variant="contained" type="submit">
-                      Post
+                      {state === "edit" ? "Save" : "Post"}
                     </Button>
                   </Stack>
                 </Stack>

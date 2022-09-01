@@ -245,7 +245,7 @@ export default function Students() {
           }}
         />
       </Box>
-
+      </Card>
       <AdvancedAlert
         open={alertOpen}
         msgType={msgType}
@@ -253,7 +253,6 @@ export default function Students() {
           setAlertOpen(false);
         }}
       />
-      </Card>
     </Container>
   );
 }

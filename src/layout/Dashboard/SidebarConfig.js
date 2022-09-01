@@ -43,9 +43,15 @@ const sidebarConfig = [
   },
 
   {
+    title: "Board Marks",
+    path: "/board_marks",
+    icon: getIcon("icon-park-outline:degree-hat"),
+  },
+
+  {
     title: "Community",
     path: "/community",
-    icon: getIcon("bi:chat-left-text"),
+    icon: getIcon("fluent:people-community-20-regular"),
     children: [
       {
         title: "Dashboard",

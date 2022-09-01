@@ -27,12 +27,12 @@ export default function FeedItemMed({ props }) {
           justifyContent="flex-end"
           marginX={1}
         >
-          <IconButton>
+          <IconButton component={NavLink} to={"/community/post_form?state=edit&id=" + props?.id}>
             <Icon icon="ant-design:edit-filled" />
           </IconButton>
           <Stack flexGrow={1} margin={1}>
             <ArabicTypography variant="subtitle2">
-              {props.publisherName}
+              {props?.publisherName}
             </ArabicTypography>
             <ArabicTypography variant="caption">date</ArabicTypography>
           </Stack>
@@ -41,20 +41,16 @@ export default function FeedItemMed({ props }) {
         <CardActionArea
           sx={{ padding: 1 }}
           component={NavLink}
-          to="/community/posts/1"
+          to={"/community/posts/" + props?.id}
         >
-          <ArabicTypography variant="h6">{props.title}</ArabicTypography>
-          <ArabicTypography variant="subtitle2">
-            {props.description}
-          </ArabicTypography>
-          <ArabicTypography variant="body2">{props.content}</ArabicTypography>
+          <ArabicTypography variant="h6">{props?.title}</ArabicTypography>
+          <ArabicTypography variant="body2">{props?.content}</ArabicTypography>
         </CardActionArea>
         <Divider>
           <Stack spacing={1} paddingTop direction="row">
-            {props.tags.map((item) => {
+            {props?.tags?.map((item) => {
               return <Chip label={item} size="small" />;
             })}
-            
           </Stack>
         </Divider>
       </Stack>

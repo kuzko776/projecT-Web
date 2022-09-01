@@ -1,25 +1,31 @@
+import { useState, useRef, useEffect } from "react";
 import { Box } from "@mui/material";
 import CustomBreadcrumbs from "components/CustomBreadcrumbs";
 import FeedItemMed from "components/community/FeedItemMed";
+import {  useParams } from 'react-router-dom';
+//helpers
+import { getDocument } from "helpers/DashboardHelper";
 
-const TEMP_DATA = {
-  username: "Waleed Ibrahim",
-  title: "الدراسة للعام الجديد 2023 بداية الشهر القادم",
-  subtitle:
-    "سوف يتم بدء الدراسة للدفعه الجديده 23 بداية الشهر القادم ان شاء الله.",
-  content:
-    " كلام كتير كلام كتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام كتير كلام كتيركلام ككتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام تكتير كلام كتيركلام كتير كلام كتير كلام كتيركلام كتير كلام ير كلام كتير كلام كتير",
-  date: "منذ 10 دقائق",
-};
-
-const breadcrumbs = [{name:"Posts",href:"/community/posts"},{name:"Post 1"}]
+import db from "../../firebase";
+import { doc } from "firebase/firestore";
 
 export default function FullPost({}) {
-  const props = TEMP_DATA;
+  const [post, setPost] = useState(null);
+  let { postId } = useParams();
+
+  const breadcrumbs = [
+    { name: "Posts", href: "/community/posts" },
+    { name: "Post " + postId },
+  ];
+
+  //refrences
+  const requestRef = doc(db, "posts", postId);
+
+  useEffect(() => getDocument(requestRef, setPost), []);
   return (
     <Box marginX={2}>
-      <CustomBreadcrumbs list={breadcrumbs}/>
-      <FeedItemMed props={props} />
+      <CustomBreadcrumbs list={breadcrumbs} />
+      <FeedItemMed props={post} />
     </Box>
   );
 }

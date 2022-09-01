@@ -103,6 +103,13 @@ export default function Batchs() {
 
   return (
     <Container>
+      <AdvancedAlert
+          open={alertOpen}
+          msgType={msgType}
+          handleClose={() => {
+            setAlertOpen(false);
+          }}
+        />
       <Card sx={{ paddingTop: 2 }}>
         <Box>
           <Stack alignItems="center">
@@ -134,7 +141,7 @@ export default function Batchs() {
                 if (type === "add") {
                   if (selectedDep) setOpen(true);
                   else {
-                    setMsgType("Please select a department first.");
+                    setMsgType("Please select a batch first.");
                     setAlertOpen(true);
                   }
                 } else if (type === "delete") {
@@ -190,14 +197,6 @@ export default function Batchs() {
             }}
           />
         </Box>
-
-        <AdvancedAlert
-          open={alertOpen}
-          msgType={msgType}
-          handleClose={() => {
-            setAlertOpen(false);
-          }}
-        />
       </Card>
     </Container>
   );

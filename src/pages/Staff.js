@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 //firebase
 import db from "../firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, doc, setDoc } from "firebase/firestore";
 
 // material
 import { Card, Stack, Button, Container, Typography, Box } from "@mui/material";
@@ -15,6 +15,8 @@ import ModifyButton from "../components/ModifyButton";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
+
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 //helpers
 import {
@@ -55,98 +57,106 @@ export default function Staff() {
   useEffect(() => handleDocChange(staffCollection, setStaffList), []);
 
   const handleSubmit = () => {
-    try {
-      const docRef = addDoc(staffCollection, inputs);
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    } finally {
-      setOpen(false);
-      setInputs({});
-    }
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, "kuzko790@gmail.com", "123456")
+      .then((userCredential) => {
+        
+        setDoc(
+          doc(staffCollection, userCredential.user.uid),
+          Object.assign({ role: "teacher" }, inputs)
+        );
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      })
+      .finally(() => {
+        setOpen(false);
+        setInputs({});
+      });
   };
 
   return (
     <Container>
       <Card sx={{ paddingTop: 2 }}>
-      <Box>
-        <Stack alignItems="center">
-          <Typography variant="h3" gutterBottom>
-            Teaching Staff
-          </Typography>
-        </Stack>
+        <Box>
+          <Stack alignItems="center">
+            <Typography variant="h3" gutterBottom>
+              Teaching Staff
+            </Typography>
+          </Stack>
 
-        <StaffDialog
-          open={open}
-          inputs={inputs}
-          setInputs={setInputs}
-          handleClose={() => setOpen(false)}
-          handleSubmit={handleSubmit}
-        />
+          <StaffDialog
+            open={open}
+            inputs={inputs}
+            setInputs={setInputs}
+            handleClose={() => setOpen(false)}
+            handleSubmit={handleSubmit}
+          />
 
-        <Stack
-          direction={matches ? "column" : "row-reverse"}
-          spacing={2}
-          alignItems="center"
-          justifyContent="space-between"
-          m={2}
+          <Stack
+            direction={matches ? "column" : "row-reverse"}
+            spacing={2}
+            alignItems="center"
+            justifyContent="space-between"
+            m={2}
+          >
+            <ModifyButton
+              type={"Teacher"}
+              selectionModel={selectionModel}
+              onClicked={(type) => {
+                if (type === "add") {
+                  setOpen(true);
+                } else if (type === "delete") {
+                  setMsgType("delete");
+                  setAlertOpen(true);
+                  handleRemoveDoc(selectionModel, staffCollection);
+                }
+              }}
+            />
+          </Stack>
+        </Box>
+
+        <Box
+          sx={{
+            height: "80vh",
+            width: 1,
+            "& .MuiDataGrid-cell--editing": {
+              bgcolor: "rgb(255,215,115, 0.19)",
+              color: "#1a3e72",
+              "& .MuiInputBase-root": {
+                height: "100%",
+              },
+            },
+            "& .Mui-error": {
+              bgcolor: (theme) =>
+                `rgb(126,10,15, ${theme.palette.mode === "dark" ? 0 : 0.1})`,
+              color: (theme) =>
+                theme.palette.mode === "dark" ? "#ff4343" : "#750f0f",
+            },
+          }}
         >
-          <ModifyButton
-            type={"Teacher"}
+          <DataGrid
+            checkboxSelection
+            disableSelectionOnClick
+            rows={staffList}
+            columns={columns}
             selectionModel={selectionModel}
-            onClicked={(type) => {
-              if (type === "add") {
-                setOpen(true);
-              } else if (type === "delete") {
-                setMsgType("delete");
-                setAlertOpen(true);
-                handleRemoveDoc(selectionModel, staffCollection);
-              }
+            onCellEditCommit={(params) => {
+              setMsgType("update");
+              if (params.field === "name")
+                onStaffNameCellEditCommit(params, setAlertOpen, params.id);
+              onCellEditCommit(params, setAlertOpen, staffCollection);
+            }}
+            onSelectionModelChange={(newSelectionModel) => {
+              setSelectionModel(newSelectionModel);
+            }}
+            components={{
+              Toolbar: GridToolbar,
             }}
           />
-        </Stack>
-      </Box>
-
-      <Box
-        sx={{
-          height: "80vh",
-          width: 1,
-          "& .MuiDataGrid-cell--editing": {
-            bgcolor: "rgb(255,215,115, 0.19)",
-            color: "#1a3e72",
-            "& .MuiInputBase-root": {
-              height: "100%",
-            },
-          },
-          "& .Mui-error": {
-            bgcolor: (theme) =>
-              `rgb(126,10,15, ${theme.palette.mode === "dark" ? 0 : 0.1})`,
-            color: (theme) =>
-              theme.palette.mode === "dark" ? "#ff4343" : "#750f0f",
-          },
-        }}
-      >
-        <DataGrid
-          checkboxSelection
-          disableSelectionOnClick
-          rows={staffList}
-          columns={columns}
-          selectionModel={selectionModel}
-          onCellEditCommit={(params) => {
-            setMsgType("update");
-            if (params.field === "name")
-              onStaffNameCellEditCommit(params, setAlertOpen, params.id);
-            onCellEditCommit(params, setAlertOpen, staffCollection);
-          }}
-          onSelectionModelChange={(newSelectionModel) => {
-            setSelectionModel(newSelectionModel);
-          }}
-          components={{
-            Toolbar: GridToolbar,
-          }}
-        />
-      </Box>
-
+        </Box>
+      </Card>
       <AdvancedAlert
         open={alertOpen}
         msgType={msgType}
@@ -154,7 +164,6 @@ export default function Staff() {
           setAlertOpen(false);
         }}
       />
-      </Card>
     </Container>
   );
 }
