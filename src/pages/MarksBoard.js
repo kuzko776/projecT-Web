@@ -107,6 +107,7 @@ const StyledTabs = styled(Tabs)(({ theme }) => {
   };
 });
 
+
 export default function MarksBoard() {
   const [marksList, setMarksList] = useState([]);
   const [stdMarks, setStdMarks] = useState([]);
