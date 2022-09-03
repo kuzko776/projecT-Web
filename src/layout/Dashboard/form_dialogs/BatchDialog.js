@@ -18,6 +18,7 @@ export default function FormDialog({
     const name = event.target.name;
     let value = event.target.value;
 
+    
     if (value < 1) value = 1;
     if (name === "semester" && value > maxSemesters) value = maxSemesters;
 
