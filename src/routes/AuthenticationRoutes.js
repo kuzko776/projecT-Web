@@ -4,7 +4,7 @@ import Loadable from "components/general/Loadable";
 import { Outlet } from "react-router";
 
 const Login = Loadable(lazy(() => import("pages/authentication/Login")));
-
+// const Register = Loadable(lazy(() => import("pages/authentication/Login")));
 // ==============================|| AUTHENTICATION ROUTING ||============================== //
 
 export default function AuthenticationRoutes(user) {

@@ -3,7 +3,6 @@ import { useState } from "react";
 
 // material
 import { styled } from "@mui/material/styles";
-import { keyframes } from "@emotion/react";
 import {
   Card,
   Stack,
@@ -110,7 +109,7 @@ export default function Login() {
       <AuthLayout />
 
       <SectionStyle sx={{ display: { xs: "none", md: "flex" } }}>
-        <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+        <Typography variant="h3" sx={{ px: 5, mt: 11, mb: 5 }}>
           Hi, Welcome Back
         </Typography>
 

@@ -42,7 +42,7 @@ function getRequestName(type) {
       name = "تعديل بيانات";
       break;
     case "vehicle":
-      name = "اذن دخول مركبة";
+      name = "دخول مركبة";
       break;
     case "medical-excuse":
       name = "اثبات عذر طبي";

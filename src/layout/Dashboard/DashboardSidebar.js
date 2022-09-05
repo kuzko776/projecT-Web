@@ -19,6 +19,7 @@ import MHidden from "../../components/MHidden";
 import sidebarConfig from "./SidebarConfig";
 
 import ribat_logo from "../../images/ribat_logo.png";
+import logo from "../../images/logo.svg";
 
 // ----------------------------------------------------------------------
 
@@ -64,11 +65,11 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const renderContent = (
     <Box>
       <Box sx={{ px: 2.5, py: 3 }}>
-        <Box component={RouterLink} to="/" sx={{ display: "inline-flex" }}>
+        <Box component={RouterLink} to="/" sx={{m:"auto" }}>
           <Box
             component="img"
-            src={ribat_logo}
-            sx={{ width: "100%", height: 40 }}
+            src={logo}
+            sx={{ width: "100%", height: 80 }}
           />
         </Box>
       </Box>
