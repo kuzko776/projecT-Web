@@ -72,12 +72,12 @@ export default function Login() {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
+        console.log(userCredential);
         navigate("/control_panel/departments", { replace: true });
       })
       .catch((error) => {
         const errorCode = error.code;
         let errorMessage = error.message;
-        console.log(errorCode);
         switch (errorCode) {
           case "auth/invalid-email":
             setErrors({ email: "Your email address appears to be malformed." });

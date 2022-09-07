@@ -29,13 +29,13 @@ const MainStyle = styled('div')(({ theme }) => ({
     }
 }));
 
-export default function MainLayout() {
+export default function MainLayout({user}) {
 
     const [open, setOpen] = useState(false);
     return (
         <RootStyle>
-            <DashboardNavbar onOpenSidebar={() => setOpen(true)} />
-            <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} />
+            <DashboardNavbar onOpenSidebar={() => setOpen(true)} user={user}/>
+            <DashboardSidebar isOpenSidebar={open} onCloseSidebar={() => setOpen(false)} user={user}/>
              <MainStyle>
              <Outlet/>
             </MainStyle>

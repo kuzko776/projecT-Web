@@ -24,6 +24,7 @@ import {
   onCellEditCommit,
   handleRemoveDoc,
   onStaffNameCellEditCommit,
+  onStaffVerifiedCellEditCommit,
 } from "../helpers/DashboardHelper";
 
 const columns = [
@@ -31,12 +32,23 @@ const columns = [
     field: "name",
     headerName: "Name",
     width: 150,
+  },
+  {
+    field: "email",
+    headerName: "Email",
+    width: 150,
+  },
+  {
+    field: "password",
+    headerName: "Password",
+    width: 150,
+  },
+  {
+    field: "verified",
+    headerName: "Verified",
+    width: 150,
+    type:"boolean",
     editable: true,
-    preProcessEditCellProps: (params) => {
-      const value = params.props.value;
-      const isValid = value.match(/^.+$/) && value.length < 60;
-      return { ...params.props, error: !isValid };
-    },
   },
 ];
 
@@ -57,23 +69,20 @@ export default function Staff() {
   useEffect(() => handleDocChange(staffCollection, setStaffList), []);
 
   const handleSubmit = () => {
-    const auth = getAuth();
-    createUserWithEmailAndPassword(auth, "kuzko790@gmail.com", "123456")
-      .then((userCredential) => {
+    // const auth = getAuth();
+    // createUserWithEmailAndPassword(auth, "kuzko790@gmail.com", "123456")
+    //   .then((userCredential) => {
         
-        setDoc(
-          doc(staffCollection, userCredential.user.uid),
-          Object.assign({ role: "teacher" }, inputs)
-        );
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-      })
-      .finally(() => {
-        setOpen(false);
-        setInputs({});
-      });
+        
+    //   })
+    //   .catch((error) => {
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //   })
+    //   .finally(() => {
+    //     setOpen(false);
+    //     setInputs({});
+    //   });
   };
 
   return (
@@ -146,6 +155,8 @@ export default function Staff() {
               setMsgType("update");
               if (params.field === "name")
                 onStaffNameCellEditCommit(params, setAlertOpen, params.id);
+                if(params.field ==="verified")
+                onStaffVerifiedCellEditCommit(params, setAlertOpen, params.id)
               onCellEditCommit(params, setAlertOpen, staffCollection);
             }}
             onSelectionModelChange={(newSelectionModel) => {

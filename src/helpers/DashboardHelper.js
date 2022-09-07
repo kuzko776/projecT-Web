@@ -13,6 +13,7 @@ import {
   limit,
 } from "firebase/firestore";
 import db from "../firebase";
+import { getAuth } from "firebase/auth";
 
 // general helpers
 export function handleDocChange(
@@ -93,9 +94,17 @@ export async function getDocuments(
       setStateList([]);
     };
   let dataArray = [];
-  const q = condition
-    ? query(parentCollection, condition, limit(limitValue))
-    : query(parentCollection, limit(limitValue));
+  // const q = condition
+  //   ? query(parentCollection, condition, limit(limitValue))
+  //   : query(parentCollection, limit(limitValue));
+    const q = condition
+    ? limitValue
+      ? query(parentCollection, condition, limit(limitValue))
+      : query(parentCollection, condition)
+    : limitValue
+    ? query(parentCollection, limit(limitValue))
+    : query(parentCollection);
+
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     const currentDoc = Object.assign({ id: doc.id }, doc.data());
@@ -202,6 +211,18 @@ export async function onStaffNameCellEditCommit(
   }
 }
 
+export async function onStaffVerifiedCellEditCommit(
+  params,
+  setAlertOpen,
+  teacherId
+) {
+  try {
+
+    setAlertOpen(true);
+  } catch (e) {
+    console.error("Error Verification", e);
+  }
+}
 // timetable helpers
 export async function onSubjectNameCellEditCommit(params, subjectId) {
   try {
@@ -224,7 +245,7 @@ export async function onSubjectNameCellEditCommit(params, subjectId) {
 }
 
 // board marks helpers
-export function onGpaCellEditCommit( id, field, value, ref ) {
+export function onGpaCellEditCommit(id, field, value, ref) {
   console.log(ref);
   updateDoc(doc(ref, id), { [field]: value });
 }

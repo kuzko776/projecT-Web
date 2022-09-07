@@ -12,12 +12,16 @@ import { styled } from "@mui/material";
 import { Icon } from "@iconify/react";
 import { NavLink } from "react-router-dom";
 
+import { getAuth } from "firebase/auth";
+
 const ArabicTypography = styled(Typography)(({ theme }) => ({
   textAlign: "right",
   direction: "rtl",
   fontFamily: theme.typography.arabicFontFamily,
 }));
 export default function FeedItemMed({ props }) {
+
+  const auth = getAuth();
   return (
     <Card sx={{ maxWidth: 600, margin: "auto" }}>
       <Stack marginY={1}>
@@ -27,9 +31,11 @@ export default function FeedItemMed({ props }) {
           justifyContent="flex-end"
           marginX={1}
         >
+          { (props.publisherID === auth.currentUser.uid) &&
           <IconButton component={NavLink} to={"/community/post_form?state=edit&id=" + props?.id}>
             <Icon icon="ant-design:edit-filled" />
           </IconButton>
+}
           <Stack flexGrow={1} margin={1}>
             <ArabicTypography variant="subtitle2">
               {props?.publisherName}

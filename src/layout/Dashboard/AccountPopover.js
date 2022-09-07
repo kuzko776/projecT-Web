@@ -21,11 +21,7 @@ import { getAuth, signOut } from "firebase/auth";
 
 
 
-const account = {
-    displayName: 'Waleed Ibrahim',
-    email: 'waleed_ibrahim@gmail.com',
-    photoURL: 'https://www.w3schools.com/howto/img_avatar.png'
-  };
+
 
 const MENU_OPTIONS = [
   {
@@ -47,9 +43,16 @@ const MENU_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+export default function AccountPopover({user}) {
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+
+  console.log(user);
+  const account = {
+    displayName: user.displayName,
+    email: user.email,
+    photoURL: 'https://www.w3schools.com/howto/img_avatar.png'
+  };
 
   const handleOpen = () => {
     setOpen(true);

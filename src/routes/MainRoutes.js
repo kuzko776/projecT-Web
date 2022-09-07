@@ -5,6 +5,8 @@ import Loadable from "components/general/Loadable";
 import MainLayout from "layout/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import MarksBoard from "pages/MarksBoard";
+import MarksBoardTeacher from "pages/MarksBoardTeacher";
+import AdminRoute from "./AdminRoute";
 
 const Departments = Loadable(lazy(() => import("pages/Deptartments")));
 const Batchs = Loadable(lazy(() => import("pages/Batchs")));
@@ -26,14 +28,18 @@ export default function MainRoutes(user) {
     path: "/",
     element: (
       <ProtectedRoute user={user}>
-        <MainLayout />
+        <MainLayout user={user}/>
       </ProtectedRoute>
     ),
 
     children: [
       {
         path: "control_panel",
-        element: <Outlet />,
+        element: (
+          <AdminRoute user={user}>
+            <Outlet />
+          </AdminRoute>
+        ),
         children: [
           {
             path: "departments",
@@ -63,7 +69,7 @@ export default function MainRoutes(user) {
       },
       {
         path: "board_marks",
-        element: <MarksBoard />,
+        element: user?.uid ==="eZwATTrW79V94exjNsML0R5k1Mc2"? <MarksBoard /> : <MarksBoardTeacher />,
       },
       {
         path: "community",
@@ -71,7 +77,11 @@ export default function MainRoutes(user) {
         children: [
           {
             path: "dashboard",
-            element: <Community />,
+            element: (
+              <AdminRoute user={user}>
+                <Community />
+              </AdminRoute>
+            ),
           },
           {
             path: "posts",
@@ -79,7 +89,11 @@ export default function MainRoutes(user) {
           },
           {
             path: "requests",
-            element: <AllRequests />,
+            element: (
+              <AdminRoute user={user}>
+                <AllRequests />
+              </AdminRoute>
+            ),
           },
           {
             path: "post_form",
@@ -91,7 +105,11 @@ export default function MainRoutes(user) {
           },
           {
             path: "requests/:requestId",
-            element: <FullRequest />,
+            element: (
+              <AdminRoute user={user}>
+                <FullRequest />
+              </AdminRoute>
+            ),
           },
         ],
       },

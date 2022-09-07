@@ -17,6 +17,7 @@ import NavSection from "../../components/NavSection";
 import MHidden from "../../components/MHidden";
 //
 import sidebarConfig from "./SidebarConfig";
+import sidebarConfigTeacher from "./SidebarConfigTeacher";
 
 import ribat_logo from "../../images/ribat_logo.png";
 import logo from "../../images/logo.svg";
@@ -52,7 +53,7 @@ DashboardSidebar.propTypes = {
   onCloseSidebar: PropTypes.func,
 };
 
-export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
+export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar, user }) {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -74,7 +75,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Box>
       </Box>
 
-      <NavSection navConfig={sidebarConfig} />
+      <NavSection navConfig={user.uid =="eZwATTrW79V94exjNsML0R5k1Mc2" ? sidebarConfig : sidebarConfigTeacher} />
     </Box>
   );
 

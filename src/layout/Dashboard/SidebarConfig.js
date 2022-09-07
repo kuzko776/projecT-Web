@@ -42,6 +42,7 @@ const sidebarConfig = [
     ],
   },
 
+
   {
     title: "Board Marks",
     path: "/board_marks",
