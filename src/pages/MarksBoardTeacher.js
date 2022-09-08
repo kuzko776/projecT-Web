@@ -48,49 +48,6 @@ var columns = [
     headerName: "Name",
     width: 150,
   },
-  {
-    field: "visible",
-    headerName: "Visible?",
-    width: 150,
-    editable: true,
-    type: "boolean",
-  },
-  {
-    field: "smesterGPA",
-    headerName: "Semester GPA",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "cumuHours",
-    headerName: "Cumulative Hours",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "score",
-    headerName: "Score",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "cumuScore",
-    headerName: "Cumulative Score",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "creditHours",
-    headerName: "Credit Hours",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "gpa",
-    headerName: "GPA",
-    width: 150,
-    editable: true,
-  },
 ];
 
 const StyledTabs = styled(Tabs)(({ theme }) => {

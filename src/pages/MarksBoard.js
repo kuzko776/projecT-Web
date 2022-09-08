@@ -9,8 +9,6 @@ import {
   collection,
   addDoc,
   runTransaction,
-  Transaction,
-  setDoc,
   writeBatch,
   doc,
 } from "firebase/firestore";
@@ -187,7 +185,7 @@ export default function MarksBoard() {
             ids.push(subject.id);
             names.push(subject.name);
           })
-        );
+        ,null, where("semester","==",inputs.semester));
 
         const docRef = await addDoc(marksCollection, {
           batchID: selectedBatch.id,
@@ -212,7 +210,7 @@ export default function MarksBoard() {
             });
           });
           batch.commit();
-        });
+        }, null, where("batchId", "==", selectedBatch.id));
       });
     } catch (e) {
       console.error("Error adding document: ", e);

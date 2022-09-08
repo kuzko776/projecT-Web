@@ -23,11 +23,11 @@ const FullRequest = Loadable(lazy(() => import("pages/Community/FullRequest")));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
-export default function MainRoutes(user) {
+export default function MainRoutes(user, teacher) {
   return {
     path: "/",
     element: (
-      <ProtectedRoute user={user}>
+      <ProtectedRoute user={user} teacher={teacher}>
         <MainLayout user={user}/>
       </ProtectedRoute>
     ),

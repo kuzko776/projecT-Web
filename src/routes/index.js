@@ -13,11 +13,11 @@ import Register from "pages/authentication/Register";
 
 // ==============================|| ROUTING RENDER ||============================== //
 
-export default function ThemeRoutes({user}) {
+export default function ThemeRoutes({user, teacher}) {
 
   return useRoutes(
     [
-      MainRoutes(user),
+      MainRoutes(user, teacher),
       AuthenticationRoutes(user),
       {
         path: "/register",
