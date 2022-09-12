@@ -42,7 +42,8 @@ import {
   handleDocChange,
   getDocumentsWithParentID,
   getDocuments,
-  onGpaCellEditCommit,
+  onBoardMarksEditCommit,
+  onBoardVisibilityChange,
 } from "../helpers/DashboardHelper";
 import { margin } from "@mui/system";
 
@@ -104,7 +105,6 @@ const StyledTabs = styled(Tabs)(({ theme }) => {
     borderRadius: theme.shape.borderRadiusMd,
   };
 });
-
 
 export default function MarksBoard() {
   const [marksList, setMarksList] = useState([]);
@@ -180,18 +180,22 @@ export default function MarksBoard() {
         const names = [];
         const stds = [];
 
-        await getDocuments(subjectsCollection, (items) =>
-          items.map((subject) => {
-            ids.push(subject.id);
-            names.push(subject.name);
-          })
-        ,null, where("semester","==",inputs.semester));
+        await getDocuments(
+          subjectsCollection,
+          (items) =>
+            items.map((subject) => {
+              ids.push(subject.id);
+              names.push(subject.name);
+            }),
+          null,
+          where("semester", "==", inputs.semester)
+        );
 
         const docRef = await addDoc(marksCollection, {
           batchID: selectedBatch.id,
           batchNum: selectedBatch.number.toString(),
-          open: "false",
-          publish: "false",
+          open: false,
+          publish: false,
           semester: inputs.semester,
           type: inputs.type,
           subjects: {
@@ -202,21 +206,34 @@ export default function MarksBoard() {
 
         const batch = writeBatch(db);
 
-        getDocuments(studentsCollection, (items) => {
-          items.map((std) => {
-            batch.set(doc(docRef, "stdMarks", std.id), {
-              name: std.name,
-              visible: true,
+        getDocuments(
+          studentsCollection,
+          (items) => {
+            items.map((std) => {
+              batch.set(doc(docRef, "stdMarks", std.id), {
+                name: std.name,
+                visible: true,
+              });
             });
-          });
-          batch.commit();
-        }, null, where("batchId", "==", selectedBatch.id));
+            batch.commit();
+          },
+          null,
+          where("batchId", "==", selectedBatch.id)
+        );
       });
     } catch (e) {
       console.error("Error adding document: ", e);
+    } finally {
+      setOpenDialog(false);
     }
   };
 
+  const handleVisibilityChange = (event) => {
+    const value = event.target.checked;
+    const filed = event.target.name;
+    const ref = doc (marksCollection, marksList[selectedBoard].id)
+    onBoardVisibilityChange(ref, filed, value);
+  };
   return (
     <Container>
       <Card sx={{ paddingTop: 2 }}>
@@ -284,20 +301,26 @@ export default function MarksBoard() {
             <Stack justifyContent="space-between" direction="row" m={2}>
               <Box>
                 <FormControlLabel
-                  control={<Switch defaultChecked />}
+                  control={
+                    <Switch
+                      name="open"
+                      checked={marksList[selectedBoard].open}
+                      onChange={handleVisibilityChange}
+                    />
+                  }
                   label="Open for teachers"
                 />
                 <FormControlLabel
-                  control={<Switch />}
+                  control={
+                    <Switch
+                      name="publish"
+                      checked={marksList[selectedBoard].publish}
+                      onChange={handleVisibilityChange}
+                    />
+                  }
                   label="Publish for students"
                 />
               </Box>
-              {/* <Box>
-              <Button variant="text" color="inherit">
-                Cancel
-              </Button>
-              <Button variant="outlined">Save</Button>
-            </Box> */}
             </Stack>
           )}
         </Box>
@@ -329,8 +352,8 @@ export default function MarksBoard() {
               components={{
                 Toolbar: GridToolbar,
               }}
-              onCellEditCommit={({ id, field, value }) => {
-                onGpaCellEditCommit(id, field, value, stdMarksCollection);
+              onBoardMarksEditCommit={({ id, field, value }) => {
+                onBoardMarksEditCommit(id, field, value, stdMarksCollection);
               }}
             />
           </Box>

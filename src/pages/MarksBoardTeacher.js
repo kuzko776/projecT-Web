@@ -38,7 +38,7 @@ import BoardMarksDialog from "../layout/Dashboard/form_dialogs/BoardMarksDialog"
 import {
   handleDocChange,
   getDocuments,
-  onGpaCellEditCommit,
+  onBoardMarksEditCommit,
 } from "../helpers/DashboardHelper";
 import { margin } from "@mui/system";
 
@@ -208,8 +208,8 @@ export default function MarksBoardTeacher() {
               components={{
                 Toolbar: GridToolbar,
               }}
-              onCellEditCommit={({ id, field, value }) => {
-                onGpaCellEditCommit(id, field, value, stdMarksCollection);
+              onBoardMarksEditCommit={({ id, field, value }) => {
+                onBoardMarksEditCommit(id, field, value, stdMarksCollection);
               }}
             />
           </Box>

@@ -245,8 +245,11 @@ export async function onSubjectNameCellEditCommit(params, subjectId) {
 }
 
 // board marks helpers
-export function onGpaCellEditCommit(id, field, value, ref) {
-  console.log(ref);
+export function onBoardVisibilityChange(document, field, value) {
+  updateDoc(document, { [field]: value });
+}
+
+export function onBoardMarksEditCommit(id, field, value, ref) {
   updateDoc(doc(ref, id), { [field]: value });
 }
 
