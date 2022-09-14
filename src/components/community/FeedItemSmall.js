@@ -25,7 +25,7 @@ export default function FeedItemSmall({ props }) {
         to={"/community/posts/" + props.id}
       >
         <Stack direction="row" alignItems="center" justifyContent="flex-end">
-          <ArabicTypography variant="caption">date</ArabicTypography>
+          <ArabicTypography variant="caption">{(new Date(props?.date.seconds * 1000)).toLocaleString()}</ArabicTypography>
           <ArabicTypography variant="subtitle1" flexGrow={1} margin={1}>
             {props.title}
           </ArabicTypography>

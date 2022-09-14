@@ -19,7 +19,6 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 
 import db from "../../firebase";
 import {
-  collectionGroup,
   collection,
   addDoc,
   doc,
@@ -84,7 +83,7 @@ export default function PostForm({ user }) {
           date: new Date(),
           publisherName: user.displayName,
           publisherID: user.uid,
-          tags: data.sendAll? [..."Computer Studies"] : data.tags 
+          tags: data.sendAll? ["Computer Studies"] : data.tags 
         });
       } else if (state == "edit") {
         delete data.id;

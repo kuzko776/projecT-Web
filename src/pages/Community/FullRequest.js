@@ -9,13 +9,15 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   IconButton,
+  Button,
+  TextField,
 } from "@mui/material";
 import CustomBreadcrumbs from "components/CustomBreadcrumbs";
 import { styled } from "@mui/material/styles";
 import { Icon } from "@iconify/react";
 
 import db from "../../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { observeDocument } from "../../helpers/DashboardHelper";
 
 import { useReactToPrint } from "react-to-print";
@@ -56,6 +58,7 @@ function DataItem({ title, content }) {
 export default function FullRequest({}) {
   const [request, setRequest] = useState(null);
   const [qr, setQR] = useState(null);
+  const [comment, setComment] = useState("");
 
   let requestID = window.location.pathname.split("/").pop();
 
@@ -71,6 +74,9 @@ export default function FullRequest({}) {
       { merge: true }
     );
   };
+  const handleCommentSave = () =>{
+    updateDoc(requestRef,{comment: comment, commentDate: new Date()})
+  }
 
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
@@ -83,6 +89,7 @@ export default function FullRequest({}) {
   };
 
   useEffect(() => observeDocument(requestRef, setRequest), []);
+  useEffect(()=> setComment(request?.comment) ,[request])
 
   var stateLabel = "",
     stateColor = "info";
@@ -173,21 +180,26 @@ export default function FullRequest({}) {
           <ToggleButton value="accepted">مقبول</ToggleButton>
         </ToggleButtonGroup>
       </Stack>
+      <Stack
+        maxWidth={600}
+        margin="auto"
+        marginBottom={1}
+        spacing={2}
+        direction="row">
+        <TextField id="outlined-basic" label="تعليق" variant="outlined" value={comment} onChange={(event)=> setComment(event.target.value)} fullWidth/>
+        <Button variant="text" onClick={handleCommentSave}>حفظ التعليق</Button>
+      </Stack>
       <PrintCard>
         <PrintStack ref={componentRef}>
           <Box>
             <Stack direction="row" justifyContent="space-between">
-              <Chip
-                label={stateLabel}
-                color={stateColor}
-                variant="outlined"
-              />
+              <Chip label={stateLabel} color={stateColor} variant="outlined" />
               <Stack>
                 <ArabicTypography variant="h6">
                   {getRequestName(request?.type)}
                 </ArabicTypography>
                 <ArabicTypography variant="caption">
-                  8 اغسطس 2022 الساعه 7:30 صباحاً
+                  {new Date(request?.date.seconds * 1000).toLocaleString()}
                 </ArabicTypography>
               </Stack>
             </Stack>

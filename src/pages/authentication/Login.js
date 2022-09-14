@@ -61,11 +61,10 @@ export default function Login() {
 
   const navigate = useNavigate();
 
-
-  const showToast = (msg)=>{
+  const showToast = (msg) => {
     setToastError(true);
     setErrorMessage(msg);
-  }
+  };
 
   const signin = (email, password, setSubmitting, setErrors) => {
     setError(false);
@@ -92,7 +91,7 @@ export default function Login() {
             break;
 
           case "auth/network-request-failed":
-            showToast("Please make sure you have internet connection.")
+            showToast("Please make sure you have internet connection.");
             break;
 
           default:
@@ -133,6 +132,13 @@ export default function Login() {
           </Stack>
 
           <LoginForm signin={signin} />
+
+          <Typography variant="body2" sx={{ my: 2 }}>
+            Don’t have an account? {""}
+            <Link variant="subtitle2" component={RouterLink} to="/register">
+              Get Started
+            </Link>
+          </Typography>
 
           <Snackbar
             open={toastError}

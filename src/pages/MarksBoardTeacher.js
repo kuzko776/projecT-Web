@@ -37,6 +37,7 @@ import BoardMarksDialog from "../layout/Dashboard/form_dialogs/BoardMarksDialog"
 //helpers
 import {
   handleDocChange,
+  handleDocChangeTwoCondition,
   getDocuments,
   onBoardMarksEditCommit,
 } from "../helpers/DashboardHelper";
@@ -105,11 +106,12 @@ export default function MarksBoardTeacher() {
     setSelectedBoard(null);
 
     if (selectedSubject) {
-      handleDocChange(
+      handleDocChangeTwoCondition(
         marksCollection,
         setMarksList,
         null,
-        where("subjects.ids", "array-contains", selectedSubject.id)
+        where("subjects.ids", "array-contains", selectedSubject.id),
+        where("open", "==", true)
       );
     }
 

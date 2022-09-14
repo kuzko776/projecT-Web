@@ -117,7 +117,7 @@ export default function RequestItem({ props }) {
             <ArabicTypography variant="subtitle1">
               {props.stdName}
             </ArabicTypography>
-            <ArabicTypography variant="caption">xxx</ArabicTypography>
+            <ArabicTypography variant="caption">{(new Date(props?.date.seconds * 1000)).toLocaleString()}</ArabicTypography>
           </Stack>
           <ReqIcon variant="rounded">
             <Icon icon={getRequestIcon(props.type)} height="32" />

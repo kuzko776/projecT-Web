@@ -103,7 +103,7 @@ export default function Staff() {
             handleSubmit={handleSubmit}
           />
 
-          <Stack
+          {/* <Stack
             direction={matches ? "column" : "row-reverse"}
             spacing={2}
             alignItems="center"
@@ -123,7 +123,7 @@ export default function Staff() {
                 }
               }}
             />
-          </Stack>
+          </Stack> */}
         </Box>
 
         <Box

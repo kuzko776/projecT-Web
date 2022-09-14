@@ -21,6 +21,7 @@ const ArabicTypography = styled(Typography)(({ theme }) => ({
 }));
 export default function FeedItemMed({ props }) {
 
+  console.log(props);
   const auth = getAuth();
   return (
     <Card sx={{ maxWidth: 600, margin: "auto" }}>
@@ -31,7 +32,7 @@ export default function FeedItemMed({ props }) {
           justifyContent="flex-end"
           marginX={1}
         >
-          { (props.publisherID === auth.currentUser.uid) &&
+          { (props?.publisherID === auth.currentUser.uid) &&
           <IconButton component={NavLink} to={"/community/post_form?state=edit&id=" + props?.id}>
             <Icon icon="ant-design:edit-filled" />
           </IconButton>
@@ -40,7 +41,7 @@ export default function FeedItemMed({ props }) {
             <ArabicTypography variant="subtitle2">
               {props?.publisherName}
             </ArabicTypography>
-            <ArabicTypography variant="caption">date</ArabicTypography>
+            <ArabicTypography variant="caption">{(new Date(props?.date.seconds * 1000)).toLocaleString()}</ArabicTypography>
           </Stack>
           <Avatar></Avatar>
         </Stack>

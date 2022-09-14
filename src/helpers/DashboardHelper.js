@@ -274,3 +274,52 @@ export async function getDocumentsWithParentID(parentCollection, setStateList) {
     setStateList([]);
   };
 }
+
+export function handleDocChangeTwoCondition(
+  parentCollection,
+  setStateList,
+  limitValue,
+  condition1,
+  condition2
+) {
+  if (parentCollection === null)
+    return () => {
+      setStateList([]);
+    };
+  let dataArray = [];
+
+  const q = condition1 && condition2
+    ? limitValue
+      ? query(parentCollection, condition1, condition2, limit(limitValue))
+      : query(parentCollection, condition1, condition2)
+    : limitValue
+    ? query(parentCollection, limit(limitValue))
+    : query(parentCollection);
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      const currentDoc = Object.assign(
+        { id: change.doc.id },
+        change.doc.data()
+      );
+      if (change.type === "added") {
+        dataArray.push(currentDoc);
+      }
+      if (change.type === "modified") {
+        dataArray = dataArray.map((obj) =>
+          obj.id === change.doc.id ? currentDoc : obj
+        );
+      }
+      if (change.type === "removed") {
+        const index = dataArray.findIndex((item) => change.doc.id === item.id);
+        dataArray.splice(index, 1);
+      }
+      setStateList([...dataArray]);
+    });
+  });
+
+  return () => {
+    setStateList([]);
+    unsubscribe();
+  };
+}
